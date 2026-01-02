@@ -100,11 +100,11 @@ class Application:
         self.b4.place(x=990, y=700)
 
         self.speak = tk.Button(self.root)
-        self.speak.place(x=1305, y=630)
+        self.speak.place(x=1050, y=630)
         self.speak.config(text="Speak", font=("Courier", 20), wraplength=100, command=self.speak_fun)
 
         self.clear = tk.Button(self.root)
-        self.clear.place(x=1205, y=630)
+        self.clear.place(x=950, y=630)
         self.clear.config(text="Clear", font=("Courier", 20), wraplength=100, command=self.clear_fun)
 
 
@@ -331,8 +331,16 @@ class Application:
 
 
     def speak_fun(self):
-        self.speak_engine.say(self.str)
-        self.speak_engine.runAndWait()
+        try:
+            # Reinitialize engine for each speech to avoid state issues
+            engine = pyttsx3.init()
+            engine.setProperty("rate", 100)
+            voices = engine.getProperty("voices")
+            engine.setProperty("voice", voices[0].id)
+            engine.say(self.str)
+            engine.runAndWait()
+        except Exception as e:
+            print(f"Speech error: {e}")
 
 
     def clear_fun(self):
